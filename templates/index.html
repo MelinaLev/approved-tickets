@@ -1,1 +1,62 @@
 <!-- HTML template for the app -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Ticket Approval Checker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; background:#f6f7fb; margin:0; }
+    .wrap { max-width: 920px; margin: 40px auto; background:#fff; padding: 24px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,.08); }
+    h1 { margin: 0 0 8px; }
+    p.sub { color:#555; margin-top:0; }
+    .card { border:1px solid #eee; border-radius:12px; padding:16px; margin-top:16px; }
+    label { display:block; font-weight:600; margin-top:12px; }
+    input[type=file], input[type=text] { width:100%; padding:10px; border:1px solid #ddd; border-radius:10px; }
+    .row { display:grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .btn { display:inline-block; padding:12px 18px; border:none; border-radius:12px; background:#111; color:#fff; font-weight:700; cursor:pointer; margin-top:16px; }
+    .hint { font-size:12px; color:#666; }
+    .alert { background:#fff7e6; border:1px solid #ffd591; padding:10px 12px; border-radius:8px; margin-bottom:12px; }
+    footer { margin-top:20px; font-size:12px; color:#777; text-align:center; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Ticket Approval Checker</h1>
+    <p class="sub">Upload your <strong>Main report</strong> and <strong>Approved tickets</strong>. You’ll get back a highlighted Excel with <em>Approval Status</em> and a <em>Missing Tickets</em> column.</p>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for m in messages %}
+          <div class="alert">{{ m }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form class="card" method="POST" enctype="multipart/form-data">
+      <label>Main report (CSV/XLSX)</label>
+      <input name="main_report" type="file" required>
+
+      <label>Approved tickets (CSV/XLSX)</label>
+      <input name="approved" type="file" required>
+
+      <div class="row">
+        <div>
+          <label>Main report: tickets column</label>
+          <input name="tickets_col" type="text" value="Tickets">
+          <div class="hint">Default is <code>Tickets</code></div>
+        </div>
+        <div>
+          <label>Approved file: ticket column</label>
+          <input name="approved_ticket_col" type="text" value="Ticket">
+          <div class="hint">Default is <code>Ticket</code>. If your column differs, adjust here.</div>
+        </div>
+      </div>
+
+      <button class="btn" type="submit">Generate Excel</button>
+    </form>
+
+    <footer>Files are processed in-memory and never stored on the server.</footer>
+  </div>
+</body>
+</html>
